@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var pen = null;
+			var type = "pen";
+			isdraw = false;
+			var offset = 0;
+
+			$(function() {
+				pen = $("#tuya").get(0).getContext("2d");
+				offset = $("#tuya").offset();
+				drawPen();
+				
+				$("#pen").click(function(){
+					drawPen();
+				});
+				
+				$("#line").click(function(){
+					drawLine();
+				});
+				
+				$("#rect").click(function(){
+					drawRect();
+				});
+				
+				$("#arc").click(function(){
+					drawArc();
+				});
+				
+				$("#eraser").click(function(){
+					drawClear();
+				});
+				
+				$("#save").click(function(){
+					var str = $("#tuya").get(0).toDataURL();
+					$("body").append("<img src='" + str + "'/>");
+				});
+				
+				$("#lineWidth").change(function(){
+					pen.lineWidth = $(this).val();
+				});
+				
+				$("#color").change(function(){
+					pen.strokeStyle = $(this).val();
+				});
+			});
+			
+			function drawClear(){
+				$("#tuya").unbind().mousedown(function(){
+					isdraw = true;
+					
+				}).mousemove(function( event ){
+					if(isdraw){
+						var width = pen.lineWidth * 50;
+						pen.clearRect(event.clientX - offset.left - width/2,event.clientY - offset.top - width/2,width,width);
+					}
+				}).mouseup(function(){
+					isdraw = false;
+				}).mouseleave(function(){
+					isdraw = false;
+				})
+				
+			}
+			
+			function drawArc(){
+				var x = y = 0;
+				$("#tuya").unbind().mousedown(function( event ){
+					isdraw = true;
+					pen.beginPath();
+					x = event.clientX - offset.left;
+					y = event.clientY - offset.top;
+				}).mouseup(function(){
+					if(isdraw){
+						var width = event.clientX - offset.left - x;
+						var height= event.clientY - offset.top - y;
+						width = width > height ? width : height;
+						
+						pen.arc(x + width / 2,y + width / 2,Math.abs(width / 2),0,2 * Math.PI);
+						pen.stroke();
+						pen.closePath();
+					};
+					
+					isdraw = false;
+				}).mouseleave(function() {
+					isdraw = false;
+				});
+			}
+			
+			function drawRect(){
+				var x = y = 0;
+				$("#tuya").unbind().mousedown(function( event ){
+					isdraw = true;
+					pen.beginPath();
+					x = event.clientX - offset.left;
+					y = event.clientY - offset.top;
+				}).mouseup(function(){
+					if(isdraw){
+						pen.rect(x,y,event.clientX - offset.left - x,event.clientY - offset.top - y);
+						pen.stroke();
+						
+					};
+					pen.closePath();
+					isdraw = false;
+				}).mouseleave(function() {
+					isdraw = false;
+				});
+			}
+			
+			function drawLine(){
+				$("#tuya").unbind().mousedown(function( event ) {
+					isdraw = true;
+					pen.beginPath();
+					pen.moveTo(event.clientX - offset.left, event.clientY - offset.top);
+				}).mouseup(function(event) {
+					if(isdraw) {
+						pen.lineTo(event.clientX - offset.left, event.clientY - offset.top);
+						pen.stroke();
+					};
+					pen.closePath();
+					isdraw = false;
+				}).mouseleave(function() {
+					isdraw = false;
+				})
+			}
+				
+			function drawPen() {
+				$("#tuya").unbind().mousedown(function(event) {
+					isdraw = true;
+					pen.beginPath();
+					pen.moveTo(event.clientX - offset.left, event.clientY - offset.top);
+				}).mousemove(function(event) {
+					if(isdraw) {
+						pen.lineTo(event.clientX - offset.left, event.clientY - offset.top);
+						pen.stroke();
+					}
+					
+				}).mouseup(function(event) {
+					isdraw = false;
+					pen.closePath();
+				}).mouseleave(function() {
+					isdraw = false;
+				});
+			}
+			
+			
+			
+			
+		</script>
+	</head>
+
+	<body>
+		<button id="pen">铅笔</button>
+		<button id="line">直线</button>
+		<button id="rect">矩形</button>
+		<button id="arc">圆</button>
+		<button id="eraser">橡皮擦</button>
+		<button id="save">保存</button>
+		
+		<select id="lineWidth">
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+			<option>4</option>
+		</select>
+
+		<select id="color">
+			<option>red</option>
+			<option>green</option>
+			<option>blue</option>
+
+		</select>
+		<div>
+			<canvas id="tuya" width="600px" height="300px" style="background-color:palegreen;"></canvas>
+		</div>
+	</body>
+
+</html>

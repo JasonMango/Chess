@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>游戏登录</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="login">
+			<input type="text" name="" class="nickname" value="" placeholder="请输入昵称"/>
+			<button class="joingame">进入游戏</button>
+		</div>
+		
+		<script type="text/javascript">
+			$(function(){
+//				var user = localStorage.getItem("user");
+//				if( user ){
+//					window.location.href = "main.html";
+//				};
+				
+			    // 0表示离线 1表示在线 2表示准备中 3代表游戏中
+			    $(".joingame").click(function(){
+			    	var user = {
+			    		nickname:$(".nickname").val(),
+			    		id:null,
+			    		win:0,
+			    		total:0,
+			    		status:0
+			    	};
+			    	localStorage.setItem("user",JSON.stringify(user));
+			    	window.location.href = "main.html";
+			    });
+			});
+		</script>
+	</body>
+</html>
